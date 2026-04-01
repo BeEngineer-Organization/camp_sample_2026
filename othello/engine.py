@@ -94,7 +94,8 @@ def run_games(player_black, player_white, num_games=100):
                 # 不正防止のためコピーを渡す
                 move = current_player.think_action(copy.deepcopy(board), valid_moves, current_color)
             except Exception as e:
-                print(f"AIエラー: {e}")
+                player_name = "黒" if current_color == 1 else "白"
+                print(f"AIエラー ({player_name}): {e}")
                 move = valid_moves[0] # エラー時は適当な手を打つ
                 
             # AIが選んだ手が本当に合法かチェック

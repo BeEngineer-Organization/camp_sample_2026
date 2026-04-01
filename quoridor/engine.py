@@ -7,7 +7,7 @@ from collections import deque
 
 def get_initial_state():
     return {
-        "p_pos": [(4, 0), (4, 8)], # 各プレイヤーの(x, y)座標
+        "p_pos": [(4, 1), (4, 7)], # 各プレイヤーの(x, y)座標（Player 0は下から、Player 1は上から）
         "walls": set(),            # ("h", x, y) 横壁 または ("v", x, y) 縦壁
         "wall_counts": [10, 10]    # 残りの壁の枚数
     }
@@ -131,7 +131,8 @@ def run_games(player0_ai, player1_ai, num_games=10):
                 move = ai.think_action(copy.deepcopy(state), valid_moves, current_player)
                 if move not in valid_moves:
                     move = valid_moves[0]
-            except Exception:
+            except Exception as e:
+                print(f"AIエラー (Player {current_player}): {e}")
                 move = valid_moves[0]
                 
             state = get_next_state(state, move, current_player)

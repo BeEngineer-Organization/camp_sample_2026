@@ -87,6 +87,7 @@ def run_games(player1_ai, player2_ai, num_games=20):
                 if move not in valid_moves:
                     move = random.choice(valid_moves)
             except Exception as e:
+                print(f"AIエラー (Player {current_player}): {e}")
                 move = random.choice(valid_moves)
                 
             board = get_next_board(board, move, current_player)

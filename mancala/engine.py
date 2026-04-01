@@ -97,7 +97,8 @@ def run_games(player0_ai, player1_ai, num_games=100):
                 move = ai.think_action(copy.deepcopy(board), valid_moves, current_player)
                 if move not in valid_moves:
                     move = random.choice(valid_moves)
-            except Exception:
+            except Exception as e:
+                print(f"AIエラー (Player {current_player}): {e}")
                 move = random.choice(valid_moves)
                 
             board, current_player = get_next_state(board, move, current_player)

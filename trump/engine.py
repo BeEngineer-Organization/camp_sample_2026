@@ -125,6 +125,7 @@ def run_games(players, num_games=100):
                     copy.deepcopy(legal_moves)
                 )
             except Exception as e:
+                print(f"AIエラー (Player {p_idx}): {e}")
                 played_cards = []
 
             # AIが返してきた手（played_cards）が、本当にlegal_movesの中に存在するかチェック
@@ -175,7 +176,7 @@ def run_games(players, num_games=100):
                 # 【7渡し】判定
                 sevens_count = sum(1 for c in played_cards if c["num"] == 7)
                 for _ in range(sevens_count):
-                    if len(hands[p_idx]) > 0:
+                    if len(hands[p_idx]) > 0 and len(active_players) > 1:
                         try:
                             # AIに渡すカードを選ばせる
                             give_c = player_module.think_give_card(copy.deepcopy(hands[p_idx]))
@@ -184,7 +185,8 @@ def run_games(players, num_games=100):
                             # 次の生き残っているプレイヤーを探して渡す
                             next_idx_pos = (active_players.index(p_idx) + 1) % len(active_players)
                             hands[active_players[next_idx_pos]].append(give_c)
-                        except:
+                        except Exception as e:
+                            print(f"7渡しエラー (Player {p_idx}): {e}")
                             pass # エラー時は渡さない処理にする
 
                 if force_clear:
