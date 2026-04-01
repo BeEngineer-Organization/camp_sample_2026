@@ -2,7 +2,7 @@
 
 ## 内容
 
-- ocelot
+- othello
   - オセロ
 - trump
   - 大富豪
