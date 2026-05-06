@@ -1,6 +1,8 @@
+import random
 # my_ai.py
 
 def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used):
+
     """
     最強を目指したAIの思考ロジック。
     
@@ -33,7 +35,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
     if current_score > 0:
         # 超高得点（100点以上）の場合
         if current_score >= 100:
-            # 相手の最大値より大きいカードで確実に勝つ
+            # 相手の最大値より大きいカードで確実に勝つ（自分の手札を小さい方から確認）
             for card in sorted_hand:
                 if card > enemy_max:
                     return card
@@ -47,7 +49,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
                 if card > enemy_max:
                     return card
             # なければ、手札の上位30%のカードを出す
-            target_index = max(len(sorted_hand) - 1 - len(sorted_hand) // 3, 0)
+            target_index = len(sorted_hand) - 1 - len(sorted_hand) // 3
             return sorted_hand[target_index]
         
         # 中得点（20～49点）の場合
@@ -55,10 +57,11 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             # 大きくリードしている場合（50点以上差）は節約
             if score_diff >= 50:
                 # 相手の平均値より少し上のカードを出す
-                enemy_avg = sum(enemy_remaining) / len(enemy_remaining) if enemy_remaining else 7
+                enemy_avg = sum(enemy_remaining) / len(enemy_remaining)
                 for card in sorted_hand:
                     if card > enemy_avg:
                         return card
+                # なければ手札の真ん中あたりのカードを出す
                 return sorted_hand[len(sorted_hand) // 2]
             
             # 接戦または負けている場合は、中間カードで勝負
@@ -71,11 +74,9 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             if remaining_turns <= 2:
                 return sorted_hand[0]
             
-            # 序盤～中盤は、相手の中央値より少し下のカードで様子見
-            if len(sorted_hand) >= 3:
-                return sorted_hand[1]
-            else:
-                return sorted_hand[0]
+            # 序盤～中盤は、中間カードで様子見
+            mid_index = len(sorted_hand) // 2
+            return sorted_hand[mid_index]
     
     # =========================================================
     # 戦略2：マイナス得点の場合 - 負けたい（相手に押し付ける）
@@ -83,7 +84,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
     elif current_score < 0:
         # 超大ダメージ（-100点以下）の場合
         if current_score <= -100:
-            # 相手の最小値より小さいカードで確実に負ける
+            # 相手の最小値より小さいカードで確実に負ける（自分の手札を大きい方から確認）
             for card in reversed(sorted_hand):
                 if card < enemy_min:
                     return card
@@ -96,8 +97,9 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             for card in reversed(sorted_hand):
                 if card < enemy_min:
                     return card
-            # なければ、最弱カードを出す
-            return sorted_hand[0]
+            # なければ、手札の下位30%のカードを出す
+            target_index = len(sorted_hand) // 3 - 1
+            return sorted_hand[target_index]
         
         # 中ダメージ（-20～-49点）の場合
         elif current_score <= -20:
@@ -125,11 +127,3 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
                 return sorted_hand[0]
             else:
                 return sorted_hand[0]
-    
-    # =========================================================
-    # 戦略3：得点が0の場合 - 引き分け狙い or 最弱カード
-    # =========================================================
-    else:
-        # 相手の使用済みカードから、相手が出しそうなカードを予測
-        # 相手も0点なので適当に出す可能性が高い → 最弱カードを出す
-        return sorted_hand[0]
