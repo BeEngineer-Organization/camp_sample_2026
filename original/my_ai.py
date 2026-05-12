@@ -1,22 +1,22 @@
 # my_ai.py
 import random
 
-def think_action(p0_info):
+def think_action(my_info):
 
     
     # 手札を小さい順に並べ替えておく（戦略を立てやすくするため）
-    sorted_hand = sorted(p0_info["my_hand"])
+    sorted_hand = sorted(my_info["own_hand"])
     
 
     # 戦略1：得点が「プラス」の時は、勝ちたい！
 
-    if p0_info["current_score"] > 0:
+    if my_info["current_score"] > 0:
         # 超高得点（100点以上）なら、手札の一番強いカード（最大値）を出す
-        if p0_info["current_score"] >= 100:
+        if my_info["current_score"] >= 100:
             return sorted_hand[-1] # リストの一番最後（最大）
             
         # まあまあの得点（30~99点）なら、真ん中くらいのカードを出して節約する
-        elif p0_info["current_score"] >= 30:
+        elif my_info["current_score"] >= 30:
             mid_index = len(sorted_hand) // 2
             return sorted_hand[mid_index]
             
@@ -27,9 +27,9 @@ def think_action(p0_info):
 
     # 戦略2：得点が「マイナス」の時は、負けたい！
 
-    elif p0_info["current_score"] < 0:
+    elif my_info["current_score"] < 0:
         # 絶対に引き取りたくない大ダメージ（50点以上のマイナス）の時は、手札で一番弱いカードを出して負ける
-        if p0_info["current_score"] <= -50:
+        if my_info["current_score"] <= -50:
             return sorted_hand[0] # リストの一番最初（最小）
             
         # 軽いマイナスなら、少し弱めのカードでやり過ごす

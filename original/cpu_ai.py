@@ -1,7 +1,7 @@
 # cpu_ai.py
 import random
 
-def think_action(p1_info):
+def think_action(cpu_info):
     """何も考えず、手札からランダムに1枚出すだけのCPU"""
-    return random.choice(p1_info["my_hand"])
+    return random.choice(cpu_info["own_hand"])
 
