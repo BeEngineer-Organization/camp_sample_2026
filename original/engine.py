@@ -23,7 +23,7 @@ def run_games(player0_ai, player1_ai, num_games=1000):
     p1_wins = 0
     draws = 0
     
-    print(f"🎮 トランプ心理戦AI 自動対戦を {num_games} 試合開始します...\n")
+    print(f"オリジナルゲーム 自動対戦を {num_games} 試合開始します。")
     
     for game in range(num_games):
         state = get_initial_state()
@@ -55,16 +55,16 @@ def run_games(player0_ai, player1_ai, num_games=1000):
             }
             
             # 両プレイヤーが同時にカードを選ぶ
-            try:
-                p0_play = player0_ai.think_action(**p0_info)
-                if p0_play not in state["p0_hand"]: p0_play = random.choice(state["p0_hand"])
-            except:
+            p0_play = player0_ai.think_action(p0_info)
+            if p0_play in state["p0_hand"]:
+                pass
+            else:
                 p0_play = random.choice(state["p0_hand"])
                 
-            try:
-                p1_play = player1_ai.think_action(**p1_info)
-                if p1_play not in state["p1_hand"]: p1_play = random.choice(state["p1_hand"])
-            except:
+            p1_play = player1_ai.think_action(p1_info)
+            if p1_play in state["p1_hand"]:
+                pass
+            else:
                 p1_play = random.choice(state["p1_hand"])
                 
             # 出したカードを手札から消し、使用済みリストに追加
@@ -88,7 +88,7 @@ def run_games(player0_ai, player1_ai, num_games=1000):
         else:
             draws += 1
             
-    print("=== 最終結果 ===")
-    print(f"Player 0 の勝利: {p0_wins} 回")
-    print(f"Player 1 の勝利: {p1_wins} 回")
+    print("【最終結果】")
+    print(f"あなたの勝利: {p0_wins} 回")
+    print(f"CPUの勝利: {p1_wins} 回")
     print(f"引き分け: {draws} 回")
