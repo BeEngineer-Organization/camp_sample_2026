@@ -4,14 +4,14 @@ import random
 def think_action(my_info):
 
     
-    # 手札を小さい順に並べ替えておく（戦略を立てやすくするため）
+    # 手札を小さい順に並べ替えておく
     sorted_hand = sorted(my_info["own_hand"])
     
 
     # 戦略1：得点が「プラス」の時は、勝ちたい！
 
     if my_info["current_score"] > 0:
-        # 超高得点（100点以上）なら、手札の一番強いカード（最大値）を出す
+        # 超高得点（100点以上）なら、手札の一番強いカードを出す
         if my_info["current_score"] >= 100:
             return sorted_hand[-1] # リストの一番最後（最大）
             
@@ -28,7 +28,7 @@ def think_action(my_info):
     # 戦略2：得点が「マイナス」の時は、負けたい！
 
     elif my_info["current_score"] < 0:
-        # 絶対に引き取りたくない大ダメージ（50点以上のマイナス）の時は、手札で一番弱いカードを出して負ける
+        # 大ダメージ（50点以上のマイナス）の時は、手札で一番弱いカードを出して負ける
         if my_info["current_score"] <= -50:
             return sorted_hand[0] # リストの一番最初（最小）
             

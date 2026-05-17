@@ -2,16 +2,16 @@
 import random
 import copy
 
+# ゲームの初期状態を生成する
 def get_initial_state():
-    """ゲームの初期状態を生成する"""
-    # スコア用山札：ハート(+1〜+13)とダイヤ(-1〜-13)
+    # 山札：ハート(+1〜+13)とダイヤ(-1〜-13)
     score_deck = [i for i in range(1, 14)] + [-i for i in range(1, 14)]
     random.shuffle(score_deck)
     
     return {
         "score_deck": score_deck,
-        "my_hand": list(range(1, 14)), # プレイヤー0の手札(1〜13)
-        "cpu_hand": list(range(1, 14)), # プレイヤー1の手札(1〜13)
+        "my_hand": list(range(1, 14)), # 自分の手札(1〜13)
+        "cpu_hand": list(range(1, 14)), # cpuの手札(1〜13)
         "my_score": 0,
         "cpu_score": 0,
         "my_used": [], # 相手の思考を読むために、使ったカードを記録
@@ -23,19 +23,19 @@ def run_games(my_ai, cpu_ai, num_games=1000):
     cpu_wins = 0
     draws = 0
     
-    print(f"オリジナルゲーム 自動対戦を {num_games} 試合開始します。")
+    print(f"オリジナルゲームを {num_games} 試合行います")
     
     for game in range(num_games):
         state = get_initial_state()
         
-        # 全7ターン進行する
+        # 全7ターン繰り返す
         for turn in range(1, 8):
             # 山札から2枚めくって得点を計算する
             card1 = state["score_deck"].pop()
             card2 = state["score_deck"].pop()
             turn_score = card1 * card2
             
-            # AIに渡す情報を準備
+            # それぞれのAIに渡す情報を準備
             # 不正防止のため、相手の手札や山札の残りは渡さない
             my_info = {
                 "turn": turn,
@@ -55,15 +55,13 @@ def run_games(my_ai, cpu_ai, num_games=1000):
             }
             
             # 両プレイヤーが同時にカードを選ぶ
-            my_play = my_ai.think_action(my_info)
-            if my_play in state["my_hand"]:
-                pass
+            if my_ai.think_action(my_info) in state["my_hand"]:
+                my_play = my_ai.think_action(my_info)
             else:
                 my_play = random.choice(state["my_hand"])
                 
-            cpu_play = cpu_ai.think_action(cpu_info)
-            if cpu_play in state["cpu_hand"]:
-                pass
+            if cpu_ai.think_action(cpu_info) in state["cpu_hand"]:
+                cpu_play = cpu_ai.think_action(cpu_info)
             else:
                 cpu_play = random.choice(state["cpu_hand"])
                 
@@ -89,6 +87,6 @@ def run_games(my_ai, cpu_ai, num_games=1000):
             draws += 1
             
     print("【最終結果】")
-    print(f"あなたの勝利: {my_wins} 回")
+    print(f"自分の勝利: {my_wins} 回")
     print(f"CPUの勝利: {cpu_wins} 回")
     print(f"引き分け: {draws} 回")
