@@ -1,6 +1,7 @@
 # main.py
 import engine
 import cpu_ai
+import cpu_ai_advanced
 import my_ai
 import my_ai_advanced
 

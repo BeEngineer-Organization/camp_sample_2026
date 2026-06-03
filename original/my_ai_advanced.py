@@ -1,7 +1,7 @@
 import random
 # my_ai.py
 
-def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used):
+def think_action(my_info):
 
     """
     最強を目指したAIの思考ロジック。
@@ -13,28 +13,28 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
     """
     
     # 手札を小さい順に並べ替え
-    sorted_hand = sorted(my_hand)
+    sorted_hand = sorted(my_info["own_hand"])
     
     # 相手の残り手札を推測（1～13から使用済みを除く）
     all_cards = set(range(1, 14))
-    enemy_remaining = sorted(list(all_cards - set(enemy_used)))
+    enemy_remaining = sorted(list(all_cards - set(my_info["enemy_used"])))
     
     # 相手の最大値と最小値を把握
     enemy_max = enemy_remaining[-1] if enemy_remaining else 0
     enemy_min = enemy_remaining[0] if enemy_remaining else 14
     
     # スコア差を計算
-    score_diff = my_total - enemy_total
+    score_diff = my_info["own_total"] - my_info["enemy_total"]
     
     # 残りターン数
-    remaining_turns = 8 - turn
+    remaining_turns = 8 - my_info["turn"]
     
     # =========================================================
     # 戦略1：プラス得点の場合 - 勝ちたい
     # =========================================================
-    if current_score > 0:
+    if my_info["current_score"] > 0:
         # 超高得点（100点以上）の場合
-        if current_score >= 100:
+        if my_info["current_score"] >= 100:
             # 相手の最大値より大きいカードで確実に勝つ（自分の手札を小さい方から確認）
             for card in sorted_hand:
                 if card > enemy_max:
@@ -43,7 +43,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             return sorted_hand[-1]
         
         # 高得点（50～99点）の場合
-        elif current_score >= 50:
+        elif my_info["current_score"] >= 50:
             # 相手の最大値+1のカードがあれば、それを出す（最小コストで勝つ）
             for card in sorted_hand:
                 if card > enemy_max:
@@ -53,7 +53,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             return sorted_hand[target_index]
         
         # 中得点（20～49点）の場合
-        elif current_score >= 20:
+        elif my_info["current_score"] >= 20:
             # 大きくリードしている場合（50点以上差）は節約
             if score_diff >= 50:
                 # 相手の平均値より少し上のカードを出す
@@ -81,9 +81,9 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
     # =========================================================
     # 戦略2：マイナス得点の場合 - 負けたい（相手に押し付ける）
     # =========================================================
-    elif current_score < 0:
+    elif my_info["current_score"] < 0:
         # 超大ダメージ（-100点以下）の場合
-        if current_score <= -100:
+        if my_info["current_score"] <= -100:
             # 相手の最小値より小さいカードで確実に負ける（自分の手札を大きい方から確認）
             for card in reversed(sorted_hand):
                 if card < enemy_min:
@@ -92,7 +92,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             return sorted_hand[0]
         
         # 大ダメージ（-50～-99点）の場合
-        elif current_score <= -50:
+        elif my_info["current_score"] <= -50:
             # 相手の最小値-1のカードがあれば、それを出す（確実に負ける）
             for card in reversed(sorted_hand):
                 if card < enemy_min:
@@ -102,7 +102,7 @@ def think_action(turn, current_score, my_hand, my_total, enemy_total, enemy_used
             return sorted_hand[target_index]
         
         # 中ダメージ（-20～-49点）の場合
-        elif current_score <= -20:
+        elif my_info["current_score"] <= -20:
             # 大きく負けている場合（-50点以上差）は、あえてマイナスを引き取る
             if score_diff <= -50:
                 # 相手の中央値より上のカードで勝ちに行く
