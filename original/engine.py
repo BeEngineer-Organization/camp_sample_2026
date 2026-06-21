@@ -30,16 +30,16 @@ def run_games(my_ai, cpu_ai, num_games=1000):
         
         # 全7ターン繰り返す
         for turn in range(1, 8):
-            # 山札から2枚めくって得点を計算する
+
+            # 山札から2枚引いて得点を決定する
             card1 = state["score_deck"].pop()
             card2 = state["score_deck"].pop()
-            turn_score = card1 * card2
             
-            # それぞれのAIに渡す情報を準備
-            # 不正防止のため、相手の手札や山札の残りは渡さない
+            # それぞれのAIに渡す情報を準備する
             my_info = {
                 "turn": turn,
-                "current_score": turn_score,
+                "card1": card1,
+                "card2": card2,
                 "own_hand": copy.deepcopy(state["my_hand"]),
                 "own_total": state["my_score"],
                 "enemy_total": state["cpu_score"],
@@ -47,14 +47,15 @@ def run_games(my_ai, cpu_ai, num_games=1000):
             }
             cpu_info = {
                 "turn": turn,
-                "current_score": turn_score,
+                "card1": card1,
+                "card2": card2,
                 "own_hand": copy.deepcopy(state["cpu_hand"]),
                 "own_total": state["cpu_score"],
                 "enemy_total": state["my_score"],
                 "enemy_used": copy.deepcopy(state["my_used"])
             }
             
-            # 両プレイヤーが同時にカードを選ぶ
+            # それぞれのAIにカードを選択させる
             if my_ai.think_action(my_info) in state["my_hand"]:
                 my_play = my_ai.think_action(my_info)
             else:
@@ -65,17 +66,17 @@ def run_games(my_ai, cpu_ai, num_games=1000):
             else:
                 cpu_play = random.choice(state["cpu_hand"])
                 
-            # 出したカードを手札から消し、使用済みリストに追加
+            # カードを使う処理をする
             state["my_hand"].remove(my_play)
             state["cpu_hand"].remove(cpu_play)
             state["my_used"].append(my_play)
             state["cpu_used"].append(cpu_play)
             
-            # 勝敗判定（数字が大きい方が得点を獲得）
+            # ターンの勝敗を決定する
             if my_play > cpu_play:
-                state["my_score"] += turn_score
+                state["my_score"] += card1 * card2
             elif cpu_play > my_play:
-                state["cpu_score"] += turn_score
+                state["cpu_score"] += card1 * card2
             # 引き分けの場合はどちらにも得点は入らない（流れる）
 
         # 7ターン終了時の合計スコアで勝敗決定

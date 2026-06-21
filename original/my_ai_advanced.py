@@ -1,17 +1,11 @@
-import random
-# my_ai.py
-
+"""
+1. 相手の残り手札を推測して、ギリギリ勝てる/負けるカードを選ぶ
+2. スコア差を考慮して、リスク管理を行う
+3. ターン進行に応じて、手札の温存と使用のバランスを取る
+"""
+    
 def think_action(my_info):
 
-    """
-    最強を目指したAIの思考ロジック。
-    
-    戦略の柱：
-    1. 相手の残り手札を推測して、ギリギリ勝てる/負けるカードを選ぶ
-    2. スコア差を考慮して、リスク管理を行う
-    3. ターン進行に応じて、手札の温存と使用のバランスを取る
-    """
-    
     # 手札を小さい順に並べ替え
     sorted_hand = sorted(my_info["own_hand"])
     
@@ -20,8 +14,8 @@ def think_action(my_info):
     enemy_remaining = sorted(list(all_cards - set(my_info["enemy_used"])))
     
     # 相手の最大値と最小値を把握
-    enemy_max = enemy_remaining[-1] if enemy_remaining else 0
-    enemy_min = enemy_remaining[0] if enemy_remaining else 14
+    enemy_max = enemy_remaining[-1]
+    enemy_min = enemy_remaining[0]
     
     # スコア差を計算
     score_diff = my_info["own_total"] - my_info["enemy_total"]
