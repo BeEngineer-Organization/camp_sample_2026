@@ -1,25 +1,15 @@
-# my_ai.py
+# B. スコア差による場合分け
 import random
-
-# 得点用の山札から既に出たカードを記録しておくリスト
-card_list = []
 
 def think_action(my_info):
 
     current_score = my_info["card1"] * my_info["card2"]
-
+    
     # 手札を小さい順に並べ替えておく
     sorted_hand = sorted(my_info["own_hand"])
 
-    if my_info["turn"] == 1:
-        card_list.clear()
-
-    card_list.append(my_info["card1"])
-    card_list.append(my_info["card2"])
-
-    if 13 in card_list and 12 in card_list and 11 in card_list:
-        if current_score >= 50:
-            return sorted_hand[-1]
+    # スコア差を計算
+    score_diff = my_info["own_total"] - my_info["enemy_total"]
 
     # 戦略1：得点が「プラス」の時は、勝ちたい！
     if current_score > 0:
@@ -29,6 +19,11 @@ def think_action(my_info):
             
         # まあまあの得点（30~99点）なら、真ん中くらいのカードを出して節約する
         elif current_score >= 30:
+
+            # 接戦のときには勝ちにいく
+            if -20 <= score_diff <= 20:
+                return sorted_hand[-1]
+            
             mid_index = len(sorted_hand) // 2
             return sorted_hand[mid_index]
             
@@ -45,7 +40,11 @@ def think_action(my_info):
             
         # 軽いマイナスなら、少し弱めのカードでやり過ごす
         else:
+
+            # 接戦のときには負けにいく
+            if -20 <= score_diff <= 20:
+                return sorted_hand[0]
+            
             return sorted_hand[2]
             
     return random.choice(my_info["own_hand"])
-

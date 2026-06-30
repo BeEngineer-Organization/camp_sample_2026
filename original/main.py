@@ -1,9 +1,7 @@
 # main.py
 import engine
 import cpu_ai
-import cpu_ai_advanced
 import my_ai
-import my_ai_advanced
 
 print("自分のAI VS ランダムCPU")
 # 1000回対戦させて勝率をチェック
