@@ -56,13 +56,15 @@ def run_games(my_ai, cpu_ai, num_games=1000):
             }
             
             # それぞれのAIにカードを選択させる
-            if my_ai.think_action(my_info) in state["my_hand"]:
-                my_play = my_ai.think_action(my_info)
+            my_chosen = my_ai.think_action(my_info)
+            if my_chosen in state["my_hand"]:
+                my_play = my_chosen
             else:
                 my_play = random.choice(state["my_hand"])
-                
-            if cpu_ai.think_action(cpu_info) in state["cpu_hand"]:
-                cpu_play = cpu_ai.think_action(cpu_info)
+            
+            cpu_chosen = cpu_ai.think_action(cpu_info)
+            if cpu_chosen in state["cpu_hand"]:
+                cpu_play = cpu_chosen
             else:
                 cpu_play = random.choice(state["cpu_hand"])
                 
